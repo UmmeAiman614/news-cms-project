@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADMIN | Settings</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <main class="flex-grow flex justify-center items-start py-8 bg-bgMain">
+
+    <div id="admin-content" class="w-full max-w-3xl px-4 bg-bgMain">
+
+      <!-- Page Header -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
+          <i class="fa fa-cog"></i> Settings
+        </h1>
+      </div>
+
+      <!-- Card -->
+      <div class="bg-bgCard rounded-lg p-6 shadow-md w-full">
+
+        <h5 class="text-xl font-semibold mb-4">Settings</h5>
+
+        <form action="/admin/save-settings" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+          <!-- Website Title -->
+          <div>
+            <label for="website_title" class="block font-medium mb-1">Website Title</label>
+            <% if (!settings.website_title || settings.website_title.trim() === '') { %>
+              <input type="text" name="website_title" autocomplete="off" required
+                class="w-full px-4 py-2 rounded border border-green-700 bg-bgCard text-textPrimary focus:outline-none focus:ring-2 focus:ring-accent">
+            <% } else { %>
+              <input type="text" name="website_title" autocomplete="off" required
+                value="<%= settings.website_title %>"
+                class="w-full px-4 py-2 rounded border border-green-700 bg-bgCard text-textPrimary focus:outline-none focus:ring-2 focus:ring-accent">
+            <% } %>
+          </div>
+
+          <!-- Upload Logo -->
+          <div>
+            <label class="block font-medium mb-1">Upload Logo</label>
+
+            <% if (settings.website_logo && settings.website_logo.trim() != '') { %>
+              <img src="/uploads/<%= settings.website_logo %>" alt="Logo" class="w-32 mb-3 rounded">
+            <% } %>
+
+            <!-- Hidden file input -->
+            <input type="file" name="website_logo" id="fileInput" class="hidden">
+
+            <!-- Custom file input label -->
+            <label for="fileInput"
+              class="inline-block px-4 py-2 rounded bg-accent text-white cursor-pointer hover:bg-textPrimary transition">
+              Choose File
+            </label>
+          </div>
+
+          <!-- Footer Description -->
+          <div>
+            <label for="footer_description" class="block font-medium mb-1">Footer Description</label>
+            <% if (!settings.footer_description || settings.footer_description.trim() === '') { %>
+              <input type="text" name="footer_description" autocomplete="off" required
+                class="w-full px-4 py-2 rounded border border-green-700 bg-bgCard text-textPrimary focus:outline-none focus:ring-2 focus:ring-accent">
+            <% } else { %>
+              <input type="text" name="footer_description" autocomplete="off" required
+                value="<%= settings.footer_description %>"
+                class="w-full px-4 py-2 rounded border border-green-700 bg-bgCard text-textPrimary focus:outline-none focus:ring-2 focus:ring-accent">
+            <% } %>
+          </div>
+
+          <!-- Submit Button -->
+          <div>
+            <input type="submit" name="submit" value="Save"
+              class="bg-accent text-white px-6 py-2 rounded hover:bg-textPrimary transition cursor-pointer">
+          </div>
+
+        </form>
+
+        
+
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+
+</html>

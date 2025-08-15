@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Add New Category</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <!-- Main Content -->
+  <main class="flex-grow p-4">
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-3xl font-bold text-center mb-6">Add New Category</h1>
+
+      <div class="bg-bgCard shadow-lg rounded-lg p-6">
+        <!-- Form Start -->
+        <form action="/admin/add-category" method="POST" autocomplete="off" class="space-y-4">
+
+          <!-- Category Name -->
+          <div>
+            <label for="category_name" class="block font-semibold">Category Name</label>
+            <input type="text" name="name" id="category_name" placeholder="Category Name" required
+              class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent">
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label for="category_description" class="block font-semibold">Description</label>
+            <textarea name="description" id="category_description" rows="4"
+              class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="text-center">
+            <button type="submit"
+              class="bg-accent text-white px-5 py-2 rounded hover:bg-textPrimary transition">
+              Save
+            </button>
+          </div>
+        </form>
+        <!-- /Form End -->
+
+        <!-- Error message -->
+        <div class="mt-4">
+          <%- include ('../partials/error') %>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ADMIN Panel</title>
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <!-- Font Awesome Icon -->
+  <link rel="stylesheet" href="/css/font-awesome.css">
+  <!-- Custom stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    /* Color Theme */
+    .bg-bgMain {
+      background-color: #E8FFD7 !important;
+    }
+
+    .bg-bgCard {
+      background-color: #93DA97 !important;
+    }
+
+    .bg-accent {
+      background-color: #5E936C !important;
+    }
+
+    .text-textPrimary {
+      color: #3E5F44 !important;
+    }
+
+    /* Admin Menu */
+    .admin-menu li a,
+    #mobile-menu li a {
+      color: white;
+      text-decoration: none;
+      padding: 0.5rem 1rem;
+      display: block;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+
+   .admin-menu li a:hover,
+#mobile-menu li a:hover {
+    background-color: #93DA97 !important;
+    color: white !important;
+}
+
+
+    /* Active link: darker background for better contrast */
+    .admin-menu li a.active,
+    #mobile-menu li a.active {
+      background-color: #93DA97;
+      color: #3E5F44;
+      font-weight: bold;
+    }
+
+
+    /* Mobile Menu */
+    #mobile-menu {
+      display: none;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    #mobile-menu.show {
+      display: block;
+    }
+
+    /* Hamburger Button */
+    #menu-toggle {
+      font-size: 1.5rem;
+      color: white;
+      border: none;
+      background: none;
+    }
+
+    /* Logout */
+    .logout {
+      color: white;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      .logout {
+        font-size: 1rem !important;
+      }
+    }
+
+    @media (min-width: 769px) {
+      .logout {
+        font-size: 1.3rem !important;
+      }
+    }
+
+    /* Logo responsive */
+    #header-admin img.logo {
+      max-height: 50px;
+      width: auto;
+    }
+
+    @media (max-width: 768px) {
+      #header-admin img.logo {
+        max-height: 40px;
+      }
+    }
+
+    /* Header alignment with padding */
+    #header-admin .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      #header-admin .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+      }
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+  </style>
+
+  <%- typeof tabulatorCSS=='undefined' ? '' : tabulatorCSS %>
+    <%- typeof summerNoteCSS=='undefined' ? '' : summerNoteCSS %>
+</head>
+
+<body class="bg-bgMain text-textPrimary min-vh-100 d-flex flex-column">
+
+  <!-- HEADER -->
+  <div id="header-admin" class="bg-bgCard shadow">
+    <div class="container">
+
+      <!-- Left: Logo -->
+      <div class="header-left">
+        <a href="/admin/dashboard" class="d-flex align-items-center">
+          <img class="logo" src="/images/news.jpg" alt="Logo">
+        </a>
+      </div>
+
+      <!-- Right: Hamburger + Logout -->
+      <div class="header-right">
+        <!-- Hamburger Button (small screens) -->
+        <button id="menu-toggle" class="d-md-none">
+          <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- LOGOUT -->
+        <a href="/admin/logout" class="logout d-flex align-items-center ms-3">
+          <i class="fa fa-sign-out me-1"></i> Logout
+        </a>
+      </div>
+    </div>
+  </div>
+  <!-- /HEADER -->
+
+  <!-- MENU BAR -->
+  <nav id="admin-menubar" class="bg-accent shadow">
+    <div class="container d-flex justify-content-between align-items-center py-2">
+
+      <!-- Desktop Menu -->
+      <ul class="admin-menu d-none d-md-flex justify-content-center flex-grow-1 list-unstyled mb-0">
+        <li><a href="/admin/dashboard">Dashboard</a></li>
+        <li><a href="/admin/article">Article</a></li>
+        <% if(role==='admin' ){ %>
+          <li><a href="/admin/category">Category</a></li>
+          <li><a href="/admin/users">Users</a></li>
+          <% } %>
+            <li><a href="/admin/comment">Comments</a></li>
+            <% if(role==='admin' ){ %>
+              <li><a href="/admin/settings">Settings</a></li>
+              <% } %>
+      </ul>
+
+      <!-- Mobile Menu -->
+      <ul id="mobile-menu" class="d-md-none mt-2">
+        <li><a href="/admin/dashboard">Dashboard</a></li>
+        <li><a href="/admin/article">Article</a></li>
+        <% if(role==='admin' ){ %>
+          <li><a href="/admin/category">Category</a></li>
+          <li><a href="/admin/users">Users</a></li>
+          <% } %>
+            <li><a href="/admin/comment">Comments</a></li>
+            <% if(role==='admin' ){ %>
+              <li><a href="/admin/settings">Settings</a></li>
+              <% } %>
+      </ul>
+    </div>
+  </nav>
+  <!-- /MENU BAR -->
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow-1 container my-4">
+    <%- body %>
+  </main>
+
+  <!-- FOOTER -->
+  <footer id="footer" class="bg-bgCard text-textPrimary text-center py-3 mt-auto">
+    <div class="container">
+      <span>© Copyright 2025 News | Powered by <a href="http://yahubaba.com/" class="text-accent">Yahu Baba</a></span>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const menuIcon = menuToggle.querySelector('i');
+
+    // Hamburger toggle
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.toggle('show');
+      menuIcon.classList.toggle('fa-bars');
+      menuIcon.classList.toggle('fa-times'); // cross icon
+    });
+
+    // Highlight active link
+    const currentPath = window.location.pathname;
+    document.querySelectorAll('.admin-menu li a, #mobile-menu li a').forEach(link => {
+      if (currentPath === link.getAttribute('href') || currentPath.startsWith(link.getAttribute('href') + '/')) {
+        link.classList.add('active');
+      }
+    });
+  </script>
+
+</body>
+
+</html>

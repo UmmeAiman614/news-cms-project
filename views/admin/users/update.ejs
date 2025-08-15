@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modify User Details</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <main class="flex-grow p-4">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Header -->
+      <h1 class="text-3xl font-bold mb-6">Modify User Details</h1>
+
+      <!-- Card/Form -->
+      <div class="bg-bgCard rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4">Update User</h2>
+
+        <!-- Form Start -->
+        <form action="/admin/update-user/<%= user.id %>" method="POST" autocomplete="off" class="space-y-4">
+
+          <div>
+            <label class="block font-medium mb-1">Full Name</label>
+            <input type="text" name="fullname" value="<%= user.fullname %>" placeholder="Full Name"
+              class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent"
+              required>
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">User Name</label>
+            <input type="text" name="username" value="<%= user.username %>" placeholder="Username" disabled
+              class="w-full px-4 py-2 rounded border border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed">
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">Password</label>
+            <input type="password" name="password" placeholder="Password"
+              class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent">
+          </div>
+
+          <div>
+            <label class="block font-medium mb-1">User Role</label>
+            <select name="role"
+              class="w-full px-4 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-accent">
+              <option value="author" <%= user.role == 'author' ? 'selected' : '' %>>Author</option>
+              <option value="admin" <%= user.role == 'admin' ? 'selected' : '' %>>Administrator</option>
+            </select>
+          </div>
+
+          <div>
+            <input type="submit" name="save" value="Update"
+              class="bg-accent text-white px-6 py-2 rounded hover:bg-textPrimary transition cursor-pointer">
+          </div>
+
+        </form>
+        <!-- Form End -->
+
+        <!-- Error message -->
+        <div class="mt-4 text-red-600">
+          <%- include ('../partials/error') %>
+        </div>
+        <!-- /Error message -->
+
+      </div>
+
+    </div>
+  </main>
+
+</body>
+</html>

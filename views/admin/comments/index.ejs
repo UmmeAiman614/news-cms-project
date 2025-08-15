@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comments Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://unpkg.com/tabulator-tables@6.0.0/dist/css/tabulator.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <main class="flex-grow p-4">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
+          <i class="fa fa-comments"></i> Comments Management
+        </h1>
+      </div>
+
+     <!-- Table Container -->
+<div class="bg-bgCard rounded-lg shadow p-4 w-full overflow-x-auto">
+  <div class="min-w-[800px]">
+    <div id="commentsTable" class="w-full"></div>
+  </div>
+</div>
+
+<style>
+  /* Tabulator horizontal scroll wrapper */
+  .tabulator-tableholder {
+    overflow-x: auto !important;
+  }
+
+  /* Hide scrollbar on large screens */
+  @media (min-width: 1024px) {
+    .tabulator-tableholder::-webkit-scrollbar {
+      display: none;
+    }
+    .tabulator-tableholder {
+      -ms-overflow-style: none; 
+      scrollbar-width: none;    
+    }
+  }
+</style>
+
+
+
+    </div>
+  </main>
+
+  <!-- Comment Modal -->
+  <div class="modal" id="commentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="commentModalLabel">Modal title</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="commentModalBody"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/tabulator-tables@6.0.0/dist/js/tabulator.min.js"></script>
+
+  <script>
+    const tableData = <%- JSON.stringify(comments) %>;
+
+    const table = new Tabulator("#commentsTable", {
+      data: tableData,
+      layout: "fitColumns",
+      responsiveLayout: "collapse",
+      pagination: true,
+      paginationSize: 10,
+      paginationSizeSelector: [5, 10, 25, 50, 100],
+      rowFormatter: function (row) {
+        const index = row.getPosition(true);
+        row.getElement().style.backgroundColor = index % 2 === 0 ? "#93DA97" : "#C2E8C5";
+        row.getElement().style.color = "#3E5F44";
+
+        row.getElement().addEventListener("mouseenter", () => {
+          row.getElement().style.backgroundColor = "#5E936C";
+          row.getElement().style.color = "#fff";
+        });
+        row.getElement().addEventListener("mouseleave", () => {
+          row.getElement().style.backgroundColor = index % 2 === 0 ? "#93DA97" : "#C2E8C5";
+          row.getElement().style.color = "#3E5F44";
+        });
+      },
+      columns: [
+        { title: "S.No.", formatter: "rownum", hozAlign: 'center', width: 100 },
+        { title: "Article", field: "article.title", headerFilter: 'input' },
+        { title: "Content", field: "content", headerFilter: 'input' },
+        { title: "Name", field: "name", headerFilter: 'input' },
+        { 
+          title: "Date", 
+          field: "createdAt", 
+          headerFilter: 'input', 
+          formatter: cell => new Date(cell.getValue()).toDateString()
+        },
+        { title: "Status", field: "status", headerFilter: 'input' },
+        {
+          title: "Actions",
+          field: "actions",
+          hozAlign: "center",
+          headerSort: false,
+          formatter: cell => {
+            const id = cell.getRow().getData()._id;
+            return `
+              <div class="flex flex-row gap-1 justify-center">
+                <button onclick="viewComment('${id}')"
+                  class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition">View</button>
+                <button onclick="deleteComment('${id}')"
+                  class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition">Delete</button>
+              </div>
+            `;
+          }
+        }
+      ],
+    });
+
+    window.addEventListener("load", () => table.redraw(true));
+    window.addEventListener("resize", () => table.redraw(true));
+
+    async function viewComment(id) {
+      const comment = tableData.find(c => c._id === id);
+      if (!comment) return;
+
+      const html = `
+        <p><b>Message:</b> ${comment.content}</p>
+        <select class="form-select" onchange="updateCommentStatus('${comment._id}', this.value)">
+          <option value="pending" ${comment.status === 'pending' ? 'selected' : ''}>Pending</option>
+          <option value="approved" ${comment.status === 'approved' ? 'selected' : ''}>Approved</option>
+          <option value="rejected" ${comment.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+        </select>
+      `;
+
+      document.getElementById('commentModalLabel').textContent = `Comment By: ${comment.name}`;
+      document.getElementById('commentModalBody').innerHTML = html;
+
+      const modal = new bootstrap.Modal(document.getElementById('commentModal'));
+      modal.show();
+    }
+
+    async function updateCommentStatus(id, status) {
+      try {
+        const res = await fetch(`/admin/update-comment-status/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        const data = await res.json();
+        if (data.success) window.location.reload();
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function deleteComment(id) {
+      if (confirm("Are you sure to delete this comment?")) {
+        const response = await fetch(`/admin/delete-comment/${id}`, { method: "DELETE" });
+        if (response.ok) window.location.reload();
+        else alert("Failed to delete comment.");
+      }
+    }
+  </script>
+
+</body>
+</html>

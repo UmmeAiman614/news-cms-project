@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen">
+
+  <div id="admin-content" class="p-4 bg-bgMain min-h-screen">
+    <div class="container mx-auto">
+
+      <!-- Header -->
+      <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <h1 class="text-2xl sm:text-3xl font-bold flex flex-wrap items-center gap-2">
+          <i class="fa fa-cubes"></i>
+          Dashboard
+          <small class="text-textPrimary text-2xl font-normal w-full sm:w-auto">
+            | Hello <%= fullname %>
+          </small>
+        </h1>
+      </div>
+
+      <!-- Dashboard Blocks -->
+      <div class="flex flex-wrap -mx-2">
+
+        <!-- Articles Block -->
+        <div class="w-full sm:w-1/2 md:w-1/4 px-2 mb-4">
+          <div class="bg-bgCard text-textPrimary rounded-lg shadow p-6 flex flex-col items-center justify-center hover:scale-105 transition">
+            <i class="fa fa-file-text text-3xl mb-2"></i>
+            <h4 class="text-lg font-semibold text-center">Articles</h4>
+            <h1 class="text-2xl font-bold mt-2"><%= articles %></h1>
+          </div>
+        </div>
+
+        <!-- Categories Block -->
+        <div class="w-full sm:w-1/2 md:w-1/4 px-2 mb-4">
+          <div class="bg-accent text-white rounded-lg shadow p-6 flex flex-col items-center justify-center hover:scale-105 transition">
+            <i class="fa fa-gears text-3xl mb-2"></i>
+            <h4 class="text-lg font-semibold text-center">Categories</h4>
+            <h1 class="text-2xl font-bold mt-2"><%= categories %></h1>
+          </div>
+        </div>
+
+        <!-- Users Block (Admin only) -->
+        <% if(role == 'admin'){ %>
+        <div class="w-full sm:w-1/2 md:w-1/4 px-2 mb-4">
+          <div class="bg-bgCard text-textPrimary rounded-lg shadow p-6 flex flex-col items-center justify-center hover:scale-105 transition">
+            <i class="fa fa-users text-3xl mb-2"></i>
+            <h4 class="text-lg font-semibold text-center">Users</h4>
+            <h1 class="text-2xl font-bold mt-2"><%= users %></h1>
+          </div>
+        </div>
+        <% } %>
+
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

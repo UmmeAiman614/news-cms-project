@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>
+    <% if(settings.website_title && settings.website_title.trim() !=='' ){ %>
+      <%= settings.website_title %>
+    <% } else { %>
+      News
+    <% } %>
+  </title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <!-- HEADER -->
+  <header class="bg-bgCard shadow-md">
+    <div class="container mx-auto px-4 py-4 flex items-center justify-between md:justify-center md:flex-col relative">
+      <!-- Logo -->
+      <% if (settings.website_logo && settings.website_logo.trim() !== '') { %>
+        <a href="/" id="logo" class="h-12 md:h-16 mb-2 md:mb-4">
+          <img src="/uploads/<%= settings.website_logo %>" alt="Logo" class="h-12 md:h-16 mx-auto">
+        </a>
+      <% } else { %>
+        <a href="/" id="logo" class="h-12 md:h-16 mb-2 md:mb-4">
+          <img src="/images/news.jpg" alt="Logo" class="h-12 md:h-16 mx-auto">
+        </a>
+      <% } %>
+
+      <!-- Hamburger for small screens -->
+      <div class="md:hidden absolute right-4 top-4">
+        <button id="menu-toggle" class="focus:outline-none">
+          <i id="menu-icon" class="fa fa-bars text-2xl"></i>
+        </button>
+      </div>
+
+      <!-- Desktop Menu -->
+      <ul id="desktop-menu" class="hidden md:flex space-x-6 font-medium justify-center w-full">
+        <li><a href="/" class="hover:text-accent transition">Home</a></li>
+        <% categories.forEach(function(category) { %>
+          <li><a href="/category/<%- category.slug %>" class="hover:text-accent transition"><%= category.name %></a></li>
+        <% }) %>
+      </ul>
+    </div>
+
+    <!-- Mobile Menu -->
+    <ul id="mobile-menu" class="hidden flex-col space-y-2 px-4 pb-4 md:hidden font-medium">
+      <li><a href="/" class="block px-2 py-1 hover:text-accent transition">Home</a></li>
+      <% categories.forEach(function(category) { %>
+        <li><a href="/category/<%- category.slug %>" class="block px-2 py-1 hover:text-accent transition"><%= category.name %></a></li>
+      <% }) %>
+    </ul>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-grow container mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+
+    <!-- News Listing -->
+    <div class="flex-1 space-y-6">
+      <%- body %>
+    </div>
+
+    <!-- Sidebar -->
+    <%- include('partials/sidebar') %>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-bgCard py-4 mt-auto shadow-inner">
+    <div class="container mx-auto text-center">
+      <% if(settings.footer_description && settings.footer_description.trim() !=='' ){ %>
+        <span><%= settings.footer_description %></span>
+      <% } else { %>
+        <span>© Copyright 2025 News | Powered by <a href="http://www.yahubaba.com/">Yahu Baba</a></span>
+      <% } %>
+    </div>
+  </footer>
+
+  <script>
+    // Highlight active links based on current URL
+    const currentUrl = window.location.pathname;
+    document.querySelectorAll('#desktop-menu a, #mobile-menu a').forEach(link => {
+      if(link.getAttribute('href') === currentUrl){
+        link.classList.add('font-bold', 'text-accent');
+      }
+    });
+
+    // Toggle mobile menu and switch hamburger/cross icon
+    const toggle = document.getElementById('menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    const icon = document.getElementById('menu-icon');
+
+    toggle.addEventListener('click', () => {
+      menu.classList.toggle('hidden');
+      if (!menu.classList.contains('hidden')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+      } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+      }
+    });
+  </script>
+
+</body>
+</html>

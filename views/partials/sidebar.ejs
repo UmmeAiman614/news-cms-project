@@ -1,0 +1,39 @@
+<div class="md:w-1/3 flex-shrink-0 space-y-6">
+
+  <!-- Responsive Search Box -->
+<div class="bg-bgCard rounded-lg p-4 shadow-md">
+  <h4 class="text-lg font-semibold mb-2">Search</h4>
+  <form class="flex flex-col sm:flex-row gap-2" action="/search" method="GET">
+    <input type="text" name="search"
+           class="flex-1 px-3 py-2 rounded border border-green-700 bg-bgCard text-textPrimary focus:outline-none focus:ring-2 focus:ring-accent"
+           placeholder="Search .....">
+    <button type="submit"
+            class="px-4 py-2 rounded bg-accent text-white hover:bg-textPrimary transition">
+      Search
+    </button>
+  </form>
+</div>
+
+  <!-- Recent Posts -->
+  <div class="bg-bgCard rounded-lg p-4 shadow-md space-y-4">
+    <h4 class="text-lg font-semibold mb-2">Recent Posts</h4>
+    <% latestNews.forEach(function(news) { %>
+      <div class="flex gap-3">
+        <a class="w-1/3 flex-shrink-0" href="/single/<%= news._id %>">
+          <img src="/uploads/<%= news.image %>" alt="" class="w-full h-20 object-cover rounded">
+        </a>
+        <div class="flex-1 flex flex-col justify-between">
+          <h5 class="font-medium text-textPrimary">
+            <a href="/single/<%= news._id %>" class="hover:text-accent transition"><%= news.title %></a>
+          </h5>
+          <div class="text-sm text-textPrimary flex flex-wrap gap-2">
+            <span><i class="fa fa-tags"></i> <a href='/category/<%= news.category.slug %>' class="hover:text-accent transition"><%= news.category.name %></a></span>
+            <span><i class="fa fa-calendar"></i> <% var date = new Date(news.createdAt); %> <%= date.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></span>
+          </div>
+          <a class="mt-1 inline-block text-white bg-accent px-2 py-1 rounded text-sm hover:bg-textPrimary transition" href="/single/<%= news._id %>">read more</a>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+</div>

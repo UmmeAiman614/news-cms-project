@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Users</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bgMain: '#E8FFD7',
+            bgCard: '#93DA97',
+            accent: '#5E936C',
+            textPrimary: '#3E5F44'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://unpkg.com/tabulator-tables@6.0.0/dist/css/tabulator.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-bgMain text-textPrimary min-h-screen flex flex-col">
+
+  <main class="flex-grow p-4">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Header & Add Button -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <h1 class="text-3xl font-bold flex items-center gap-2">
+          <i class="fa fa-users"></i> All Users
+        </h1>
+        <a href="/admin/add-user"
+          class="bg-accent text-white px-4 py-2 rounded hover:bg-textPrimary transition w-full md:w-auto text-center">
+          Add User
+        </a>
+      </div>
+
+      <!-- Table Container -->
+       <div class="flex justify-center">
+      <div class="bg-bgCard rounded-lg shadow p-4 max-w-full md:max-w-[1200px] overflow-x-auto md:overflow-x-hidden">
+        <div id="usersTable" class="min-w-[600px]"></div>
+      </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/tabulator-tables@6.0.0/dist/js/tabulator.min.js"></script>
+
+  <script>
+    const tableData = <%- JSON.stringify(users) %>;
+
+    const table = new Tabulator("#usersTable", {
+      data: tableData,
+      layout: "fitDataTable", // Fits content without shrinking
+      responsiveLayout: false,
+      pagination: true,
+      paginationSize: 10,
+      paginationSizeSelector: [5, 10, 25, 50, 100],
+      autoResize: true,
+      resizableColumns: true,
+      rowFormatter: function (row) {
+        const index = row.getPosition(true);
+        row.getElement().style.backgroundColor = index % 2 === 0 ? "#93DA97" : "#C2E8C5";
+        row.getElement().style.color = "#3E5F44";
+
+        row.getElement().addEventListener("mouseenter", () => {
+          row.getElement().style.backgroundColor = "#5E936C";
+          row.getElement().style.color = "#fff";
+        });
+        row.getElement().addEventListener("mouseleave", () => {
+          row.getElement().style.backgroundColor = index % 2 === 0 ? "#93DA97" : "#C2E8C5";
+          row.getElement().style.color = "#3E5F44";
+        });
+      },
+      columns: [
+        { title: "S.No.", formatter: "rownum", hozAlign: 'center', minWidth: 80 },
+        { title: "Full Name", field: "fullname", headerFilter: 'input', minWidth: 200 },
+        { title: "User Name", field: "username", headerFilter: 'input', minWidth: 200 },
+        { title: "Role", field: "role", headerFilter: 'input', minWidth: 150 },
+        {
+          title: "Actions",
+          hozAlign: "center",
+          headerSort: false,
+          minWidth: 200,
+          formatter: cell => {
+            const id = cell.getData()._id;
+            return `
+              <div class="flex flex-row gap-1 justify-center">
+                <a href="/admin/update-user/${id}"
+                   class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700 transition">Edit</a>
+                <button onclick="deleteUser('${id}')"
+                   class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700 transition">Delete</button>
+              </div>
+            `;
+          }
+        }
+      ],
+    });
+
+    window.addEventListener("load", () => table.redraw(true));
+    window.addEventListener("resize", () => table.redraw(true));
+
+    async function deleteUser(id) {
+      try {
+        if (confirm("Are you sure to delete this user?")) {
+          const response = await fetch(`/admin/delete-user/${id}`, { method: "DELETE" });
+          if (response.ok) window.location.reload();
+          else if (response.status == 400) {
+            const data = await response.json();
+            alert(data.message);
+          } else {
+            alert("Failed to delete user.");
+          }
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+    }
+  </script>
+
+</body>
+</html>
